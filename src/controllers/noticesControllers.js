@@ -24,13 +24,15 @@ async function getAllNotices() {
     throw new Error("getAllNotices controller error");
   }
 }
-async function createNotice(title, subtitle, images, content) {
+async function createNotice(title, subtitle, images,videos, content,category) {
   try {
     const newNotice = await Notice.create({
       title,
       subtitle,
       images,
+      videos,
       content,
+      category
     });
     return "Noticia Creada Correctamente";
   } catch (error) {

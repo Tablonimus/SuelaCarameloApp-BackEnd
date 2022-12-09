@@ -30,9 +30,16 @@ router.get("/:id", async (req, res) => {
 });
 router.post("/", async (req, res) => {
   try {
-    const { title, subtitle, images, content } = req.body;
+    const { title, subtitle, images, videos, content, category } = req.body;
 
-    const newNotice = await createNotice(title, subtitle, images, content);
+    const newNotice = await createNotice(
+      title,
+      subtitle,
+      images,
+      videos,
+      content,
+      category
+    );
     res.status(201).json(newNotice);
   } catch (error) {
     res.status(400).json(error.message);
