@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
       },
 
       content: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
       },
       category: {
         type: DataTypes.STRING,
