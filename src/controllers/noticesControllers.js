@@ -1,6 +1,15 @@
 const axios = require("axios");
 const { Notice } = require("../db");
 
+async function getNoticeDetail(id) {
+  try {
+    const notice = await Notice.findByPk(id);
+    return notice;
+  } catch (error) {
+    throw new Error("getNoticeDetail controller error");
+  }
+}
+
 async function getAllNotices() {
   ////////////FIND ALL DB INFO///////
 
@@ -29,4 +38,4 @@ async function createNotice(title, subtitle, images, content) {
   }
 }
 
-module.exports = { getAllNotices, createNotice };
+module.exports = { getAllNotices, createNotice, getNoticeDetail };
