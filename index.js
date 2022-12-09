@@ -27,4 +27,4 @@ conn.sync({ force: false }).then(() => {
   server.listen(port, () => {
     console.log(`Listening at ${port}`); // eslint-disable-line no-console
   });
-}); 
+});
