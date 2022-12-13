@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
     "Team",
     {
       name: {
-        type: DataTypes.STRING,        
+        type: DataTypes.STRING,
       },
 
       short_name: {
@@ -18,10 +18,13 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
       },
 
-      content: {
+      place: {
+        type: DataTypes.STRING,
+      },
+      category: {
         type: DataTypes.STRING,
       },
     },
-    { timestamps: true }
+    { timestamps: false }
   );
 };

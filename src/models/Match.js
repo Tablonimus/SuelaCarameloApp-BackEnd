@@ -6,26 +6,35 @@ module.exports = (sequelize) => {
   sequelize.define(
     "Match",
     {
-      team1: {
-        type: DataTypes.STRING,
-      },
-
-      team2: {
-        type: DataTypes.STRING,
-      },
-
       place: {
-        type: DataTypes.STRING,
-      },
-
-      score1: {
-        type: DataTypes.STRING,
-      },
-      score2: {
         type: DataTypes.STRING,
       },
       date: {
         type: DataTypes.STRING,
+      },
+      time: {
+        type: DataTypes.STRING,
+      },
+      local: {
+        type: DataTypes.STRING,
+      },
+      visitor: {
+        type: DataTypes.STRING,
+      },
+      local_score: {
+        type: DataTypes.STRING,
+        defaultValue: "0",
+      },
+      visitor_score: {
+        type: DataTypes.STRING,
+        defaultValue: "0",
+      },
+      category: {
+        type: DataTypes.STRING,
+      },
+      finished: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
       },
     },
     { timestamps: false }
