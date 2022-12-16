@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
         type: DataTypes.ARRAY(DataTypes.STRING),
       },
       videos: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
+        type: DataTypes.STRING,
       },
 
       content: {
