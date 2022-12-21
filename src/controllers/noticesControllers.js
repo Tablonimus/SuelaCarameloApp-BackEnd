@@ -60,7 +60,7 @@ async function createNotice(
     }
     return "Noticia Creada Correctamente";
   } catch (error) {
-    throw new Error("createNotice Error");
+    throw new Error("createNotice Error", console.log(error));
   }
 }
 
