@@ -12,7 +12,7 @@ const pg = require("pg");
 //   }
 // );
 
-const sequelize = new Sequelize("postgresql://postgres:dBX15kyhx3gTsfaTdMXk@containers-us-west-94.railway.app:8031/railway", {
+const sequelize = new Sequelize("postgresql://postgres:mMkTdvi0bKMvBB1LFfAM@containers-us-west-119.railway.app:7790/railway", {
   logging: false, // set to console.log to see the raw SQL queries
   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
   dialect: "postgres",
