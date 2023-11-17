@@ -6,10 +6,9 @@ const {
   createNotice,
   getNoticeDetail,
 } = require("../controllers/noticesControllers");
-const axios = require("axios");
+
 const router = Router();
-const upload = require("../utils/multer");
-const cloudinary = require("../utils/cloudinary");
+
 
 router.get("/", async (req, res) => {
   try {

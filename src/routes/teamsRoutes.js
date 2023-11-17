@@ -6,7 +6,6 @@ const {
   getTeamDetail,
   createTeam,
 } = require("../controllers/teamsControllers.js");
-const axios = require("axios");
 const router = Router();
 
 router.get("/", async (req, res) => {
