@@ -6,7 +6,6 @@ const {
   getMatchDetail,
   createMatch,
 } = require("../controllers/matchsControllers.js");
-const axios = require("axios");
 const router = Router();
 
 router.get("/", async (req, res) => {
