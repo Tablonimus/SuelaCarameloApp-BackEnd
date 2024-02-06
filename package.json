@@ -5,14 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
-
     "test": "mocha -w ./tests/**/*.spec.js"
   },
   "author": "Tablonimus",
   "license": "ISC",
   "engines": {
-    "node": ">=12.18.3",
-    "npm": ">=6.14.6"
+    "node": ">18.0.0",
+    "npm": "9.8.1"
   },
   "dependencies": {
     "@vercel/node": "^3.0.17",
