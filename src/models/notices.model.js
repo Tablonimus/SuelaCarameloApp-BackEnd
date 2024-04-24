@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const noticiasSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    // required: true,
   },
   subtitle: {
     type: String,
@@ -11,14 +11,22 @@ const noticiasSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  category: {
+    type: String,
+  },
+  images: {
+    type: Array,
+  },
+  videos: {
+    type: String,
+  },
   date: {
     type: Date,
     default: Date.now,
   },
   author: {
-    type: String,
-    required: "true"
-  }
+    type: Object,
+  },
 });
 
 export default mongoose.model("Noticia", noticiasSchema);
