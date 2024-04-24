@@ -1,7 +1,9 @@
 import authRoutes from "./auth.routes.js";
-import noticiaRoutes from "./noticias.routes.js";
+import noticiaRoutes from "./notices.routes.js";
 import teamRoutes from "./teams.routes.js";
 import playerRoutes from "./players.routes.js";
+import fixtureRoutes from "./fixture.routes.js";
+import positionsRoutes from "./positions.routes.js";
 import { Router } from "express"
 const app = Router();
 
@@ -11,14 +13,12 @@ app.get("/", (req, res) => {
   res.send("GET de prueba / sola con deploy");
 });
 
-
-
-
-
-app.use("/sc/auth", authRoutes);
-app.use("/sc/notices", noticiaRoutes);
-app.use("/sc/", teamRoutes);
-app.use("/sc/", playerRoutes);
+app.use("/auth", authRoutes);
+app.use("/notices", noticiaRoutes);
+app.use("/teams", teamRoutes);
+app.use("/players", playerRoutes);
+app.use("/fixtures", fixtureRoutes);
+app.use("/positions", positionsRoutes);
 
 export default app
 
