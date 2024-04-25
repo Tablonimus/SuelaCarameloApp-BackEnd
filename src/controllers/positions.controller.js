@@ -1,8 +1,17 @@
 import Position from "../models/positions.model.js";
 
 export const getPositions = async (req, res) => {
-  const Positions = await Position.find();
-  res.json(Positions);
+  try {
+    const { category = "A1" } = req.query;
+    console.log(category);
+
+    const positions = await Position.findOne({ category: category });
+
+    res.json(positions);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: "Error", message: error.message });
+  }
 };
 
 export const getPositionById = async (req, res) => {
