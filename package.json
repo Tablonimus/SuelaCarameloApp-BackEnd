@@ -1,20 +1,17 @@
 {
-  "name": "api",
+  "name": "suelapp-backend",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "dev":" nodemon index.js",
-    "start": "node ./index.js",
+    "start": "node index.js",
     "test": "mocha -w ./tests/**/*.spec.js"
   },
   "author": "Tablonimus",
   "license": "ISC",
-  "engines": {
-    "node": ">18.0.0",
-    "npm": "9.8.1"
-  },
+
   "dependencies": {
     "@vercel/node": "^3.0.1",
     "axios": "^1.6.8",
