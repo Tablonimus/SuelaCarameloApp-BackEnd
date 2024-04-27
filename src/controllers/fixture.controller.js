@@ -40,7 +40,7 @@ export const createFixture = async (req, res) => {
       { number, image, is_Active, category },
       { new: true }
     );
-    if (updatedFixture && updatedFixture.number === number) {
+    if (updatedFixture) {
       console.log('EL FIXTURE SE ACTUALIZA',updatedFixture)
      return res.json(updatedFixture);
     } else {
