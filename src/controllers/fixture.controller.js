@@ -10,7 +10,7 @@ export const getFixtures = async (req, res) => {
       .reverse()
       .find((fixture) => fixture.is_Active) ;
 
-    res.json({ fixtures, activeNumber: activeFixture?.number || 1 });
+    res.json({ fixtures, activeNumber: activeFixture?.number});
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: "Error", message: error.message });
