@@ -41,15 +41,17 @@ export const createFixture = async (req, res) => {
       { new: true }
     );
     if (updatedFixture && updatedFixture.number === number) {
+      console.log('EL FIXTURE SE ACTUALIZA',updatedFixture)
      return res.json(updatedFixture);
     } else {
+     
       const newFixture = await Fixture.create({
         number,
         image,
         is_Active,
         category,
       });
-
+      console.log('creando nuevo fixture ', newFixture);
      return res.json(newFixture);
     }
   } catch (error) {
