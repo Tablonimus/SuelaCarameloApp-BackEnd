@@ -8,8 +8,8 @@ export const getFixtures = async (req, res) => {
     const fixtures = await Fixture.find({ category: category });
     const activeFixture = fixtures
       .reverse()
-      .find((fixture) => fixture.is_Active);
-    console.log(activeFixture.number);
+      .find((fixture) => fixture.is_Active) ;
+
     res.json({ fixtures, activeNumber: activeFixture?.number || 1 });
   } catch (error) {
     console.log(error);
@@ -40,8 +40,8 @@ export const createFixture = async (req, res) => {
       { number, image, is_Active, category },
       { new: true }
     );
-    if (updatedFixture) {
-      res.json(updateFixture);
+    if (updatedFixture && updatedFixture.number === number) {
+     return res.json(updatedFixture);
     } else {
       const newFixture = await Fixture.create({
         number,
@@ -50,7 +50,7 @@ export const createFixture = async (req, res) => {
         category,
       });
 
-      res.json(newFixture);
+     return res.json(newFixture);
     }
   } catch (error) {
     console.log(error);
