@@ -29,7 +29,8 @@
 import { connectDB } from "./src/db.js";
 import app from "./src/app.js";
 
-connectDB();
-console.log("pasamg");
-app.listen("3000");
-console.log("Server on port", 3000);
+await connectDB().then(
+  app.listen("3000", () => {
+    console.log("Server on port", 3000);
+  })
+);

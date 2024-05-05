@@ -1,38 +1,35 @@
 import Noticia from "../models/notices.model.js";
+import { ordenarFechas } from "../utils/date.utils.js";
 
 export const getNoticias = async (req, res) => {
-  const noticias = await Noticia.find();
-  res.json(noticias);
+  try {
+    const { category } = req.query;
+
+    const noticias = category
+      ? await Noticia.find({ category: category })
+      : await Noticia.find();
+
+    console.log(noticias);
+    const orderedNotices = noticias.sort((a, b) => {
+      ordenarFechas(a, b);
+    });
+
+    res.json(orderedNotices);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };
 
 export const createNoticia = async (req, res) => {
-  const {
-    title,
-    subtitle,
-    description,
-    author,
-    date,
-    images,
-    videos,
-    category,
-  } = req.body;
+  try {
+    console.log("aca", req.body);
 
-  console.log("aca", req.body);
+    const newNotice = await Noticia.create(req.body);
 
-  const newNotice = await Noticia.create(req.body);
-  // const newNoticia = new Noticia({
-  //   title,
-  //   subtitle,
-  //   description,
-  //   author,
-  //   date,
-  //   images,
-  //   videos,
-  // });
-
-  // const savedNoticia = await newNoticia.save();
-  // res.json(savedNoticia);
-  res.json(newNotice);
+    res.json(newNotice);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };
 
 export const getNoticia = async (req, res) => {

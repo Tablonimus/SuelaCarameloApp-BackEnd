@@ -8,16 +8,16 @@ const noticiasSchema = new mongoose.Schema({
   subtitle: {
     type: String,
   },
-  description: {
-    type: String,
-  },
-  category: {
-    type: String,
-  },
   images: {
     type: Array,
   },
   videos: {
+    type: String,
+  },
+  content: {
+    type: String,
+  },
+  category: {
     type: String,
   },
   date: {
@@ -26,6 +26,7 @@ const noticiasSchema = new mongoose.Schema({
   },
   author: {
     type: Object,
+    default: { name: "Suela Caramelo", img: "suela.jpg" },
   },
 });
 

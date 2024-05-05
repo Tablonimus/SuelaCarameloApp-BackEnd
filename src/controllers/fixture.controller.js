@@ -3,13 +3,12 @@ import Fixture from "../models/fixture.model.js";
 export const getFixtures = async (req, res) => {
   try {
     const { category = "A1" } = req.query;
-    console.log(category);
 
     const fixtures = await Fixture.find({ category: category });
     const activeFixture = fixtures
       .reverse()
       .find((fixture) => fixture.is_Active);
-    console.log(activeFixture.number);
+
     res.json({ fixtures, activeNumber: activeFixture?.number || 1 });
   } catch (error) {
     console.log(error);
