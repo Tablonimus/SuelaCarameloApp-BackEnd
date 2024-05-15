@@ -7,9 +7,9 @@ export const getNoticias = async (req, res) => {
 
     const noticias = category
       ? await Noticia.find({ category: category })
-      : await Noticia.find();
+      : (await Noticia.find()).reverse();
 
-    console.log(noticias);
+
     const orderedNotices = noticias.sort((a, b) => {
       ordenarFechas(a, b);
     });
@@ -22,7 +22,7 @@ export const getNoticias = async (req, res) => {
 
 export const createNoticia = async (req, res) => {
   try {
-    console.log("aca", req.body);
+
 
     const newNotice = await Noticia.create(req.body);
 
