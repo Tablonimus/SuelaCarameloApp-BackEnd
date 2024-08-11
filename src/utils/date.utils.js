@@ -1,5 +1,3 @@
-export const ordenarFechas = (a, b) => {
-  const fechaA = Date.parse(a.date);
-  const fechaB = Date.parse(b.date);
-  return fechaA - fechaB;
+export const ordenarFechas = (noticias) => {
+  return new Date(b.date) - new Date(a.date);
 };

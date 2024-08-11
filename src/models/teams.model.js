@@ -4,25 +4,25 @@ const teamSchema = new mongoose.Schema({
   name: {
     type: String,
   },
+  logo: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  foundation: {
+    type: String,
+  },
+  stadium: {
+    type: String,
+  },
+  colors: {
+    type: String,
+  },
   category: {
     type: String,
   },
-  details: {
-    type: String,
-  },
-  players: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Player",
-    },
-  ],
-  image: {
-    type: String,
-  },
-  points: {
-    type: Number,
-    default: 0,
-  },
+  teams: { type: Array },
 });
 
 export default mongoose.model("Team", teamSchema);
