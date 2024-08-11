@@ -19,4 +19,10 @@ export const createTeam = async (req, res) => {
   const savedTeam = await newTeam.save();
   res.json(savedTeam);
 };
+export const createManyTeams = async (req, res) => {
+  const teams = req.body;
 
+  const createdTeams = await Team.create()
+
+  res.json(savedTeam);
+};
