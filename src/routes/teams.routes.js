@@ -10,9 +10,9 @@ import {
 
 const router = Router();
 
-router.get("/teams", getTeams);
-router.post("/teams", createTeam);
-router.post("/teams/create_many", createManyTeams);
+router.get("/", getTeams);
+router.post("/", createTeam);
+router.post("/create-many", createManyTeams);
 
 
 export default router;

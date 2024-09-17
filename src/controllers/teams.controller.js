@@ -8,7 +8,7 @@ export const getTeams = async (req, res) => {
 export const createTeam = async (req, res) => {
   const { name, category, players, details, image } = req.body;
 
-  const newTeam = new Team({
+  await Team.create({
     name,
     category,
     players,
@@ -16,13 +16,31 @@ export const createTeam = async (req, res) => {
     image,
   });
 
-  const savedTeam = await newTeam.save();
-  res.json(savedTeam);
+  res.json("creado");
 };
 export const createManyTeams = async (req, res) => {
-  const teams = req.body;
+  try {
+    const teams = Object.keys(req.body);
 
-  const createdTeams = await Team.create()
+    const teamsData = teams.map((team) => {
+      return {
+        name: team,
+        category: "FEM",
+        logo: "",
+        address: "",
+        stadium: "",
+        colors: "",
+        teams: [],
+      };
+    });
 
-  res.json(savedTeam);
+    // console.log(teamsData);
+
+    Team.create(teamsData);
+
+    res.status(200).json("creado");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
 };
