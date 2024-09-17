@@ -1,9 +1,21 @@
 import Player from "../models/players.model.js";
 
 export const getPlayers = async (req, res) => {
-  const players = await Player.find();
-  res.json(players);
+  const { name } = req.query;
+  try {
+    if (name) {
+      const players = await Player.find({ current_club_name: name });
+      res.json(players);
+    } else {
+      const players = await Player.find();
+      res.json(players);
+    }
+  } catch (error) {
+    console.log(error);
+    res.json(error);
+  }
 };
+
 export const createPlayer = async (req, res) => {
   try {
     const playerData = Object.values(req.body);

@@ -4,11 +4,13 @@ import {
   createPlayer,
   deletePlayer,
   updatePlayer,
+  getPlayersByTeam,
 } from "../controllers/players.controller.js";
 
 const router = Router();
 
 router.get("/", getPlayers);
+
 router.get("/:id");
 router.post("/", createPlayer);
 router.put("/:id", updatePlayer);
