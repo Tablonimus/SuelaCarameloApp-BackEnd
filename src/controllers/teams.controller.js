@@ -1,8 +1,19 @@
 import Team from "../models/teams.model.js";
 
 export const getTeams = async (req, res) => {
-  const teams = await Team.find();
-  res.json(teams);
+  const { name } = req.query;
+  try {
+    if (name) {
+      const teams = await Team.find({ name: name });
+      res.json(teams);
+    } else {
+      const teams = await Team.find();
+      res.json(teams);
+    }
+  } catch (error) {
+    console.log(error);
+    res.json(error);
+  }
 };
 
 export const createTeam = async (req, res) => {
