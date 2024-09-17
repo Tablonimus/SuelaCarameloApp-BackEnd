@@ -4,7 +4,6 @@ import {
   createPlayer,
   deletePlayer,
   updatePlayer,
-  getPlayersByTeam,
 } from "../controllers/players.controller.js";
 
 const router = Router();
