@@ -8,10 +8,10 @@ import {
 
 const router = Router();
 
-router.get("/players",getPlayers);
-router.get("/players/:id");
-router.post("/players",createPlayer);
-router.put("/players/:id",updatePlayer);
-router.delete("/players/:id", deletePlayer);
+router.get("/", getPlayers);
+router.get("/:id");
+router.post("/", createPlayer);
+router.put("/:id", updatePlayer);
+router.delete("/:id", deletePlayer);
 
 export default router;
