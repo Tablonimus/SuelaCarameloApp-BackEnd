@@ -1,10 +1,10 @@
 import Player from "../models/players.model.js";
 
 export const getPlayers = async (req, res) => {
-  const { name } = req.query;
+  const { name, category } = req.query;
   try {
-    if (name) {
-      const players = await Player.find({ current_club_name: name });
+    if (name && category) {
+      const players = await Player.find({ current_club_name: name , category: category});
       res.json(players);
     } else {
       const players = await Player.find();
