@@ -1,10 +1,10 @@
 import Team from "../models/teams.model.js";
 
 export const getTeams = async (req, res) => {
-  const { name } = req.query;
+  const { name, category } = req.query;
   try {
-    if (name) {
-      const teams = await Team.find({ name: name });
+    if (name && category) {
+      const teams = await Team.find({ name: name, category: category });
       res.json(teams);
     } else {
       const teams = await Team.find();
@@ -32,11 +32,12 @@ export const createTeam = async (req, res) => {
 export const createManyTeams = async (req, res) => {
   try {
     const teams = Object.keys(req.body);
+    const { category } = req.query;
 
     const teamsData = teams.map((team) => {
       return {
         name: team,
-        category: "FEM",
+        category: category,
         logo: "",
         address: "",
         stadium: "",
