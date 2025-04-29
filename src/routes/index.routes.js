@@ -4,7 +4,8 @@ import teamRoutes from "./teams.routes.js";
 import playerRoutes from "./players.routes.js";
 import fixtureRoutes from "./fixture.routes.js";
 import positionsRoutes from "./positions.routes.js";
-import { Router } from "express"
+import matchesRoutes from "./matchs.routes.js";
+import { Router } from "express";
 const app = Router();
 
 // Configurar los routers
@@ -19,6 +20,7 @@ app.use("/teams", teamRoutes);
 app.use("/players", playerRoutes);
 app.use("/fixtures", fixtureRoutes);
 app.use("/positions", positionsRoutes);
+app.use("/matches", matchesRoutes);
 
-export default app
 
+export default app;
