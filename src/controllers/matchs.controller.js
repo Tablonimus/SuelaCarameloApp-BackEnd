@@ -226,12 +226,12 @@ export const getLiveMatches = async (req, res) => {
         { status: "playing" },
         {
           status: "pending",
-          date: { $lte: new Date(Date.now() + 24 * 60 * 60 * 1000) },
-        }, // Próximos 24hs
+          date: { $lte: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
+        }, // Próximos 7 días
         {
           status: "finished",
-          date: { $gte: new Date(Date.now() - 6 * 60 * 60 * 1000) },
-        }, // Finalizados en últimas 6hs
+          date: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        }, // Finalizados en los últimos 7 días
       ],
     })
       .populate("local", "name logo")
