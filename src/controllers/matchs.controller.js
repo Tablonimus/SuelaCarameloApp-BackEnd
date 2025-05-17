@@ -226,6 +226,8 @@ export const getLiveMatches = async (req, res) => {
     // Obtener partidos que están en juego, próximos o recientemente finalizados
     const liveMatches = await Match.find({
       $or: [
+        { status: "postponed" },
+        { status: "canceled" },
         { status: "playing" },
         {
           status: "pending",
