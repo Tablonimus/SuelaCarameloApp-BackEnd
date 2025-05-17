@@ -221,6 +221,7 @@ export const getMatchesByTeam = async (req, res) => {
 export const getLiveMatches = async (req, res) => {
   try {
     console.log("Obteniendo partidos en vivo/proximos/recientes...");
+    console.log("Obteniendo partidos en vivo/proximos/recientes...");
     
     // Obtener partidos que están en juego, próximos o recientemente finalizados
     const liveMatches = await Match.find({
