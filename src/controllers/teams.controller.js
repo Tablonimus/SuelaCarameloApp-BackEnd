@@ -48,7 +48,7 @@ export const createManyTeams = async (req, res) => {
 
     // console.log(teamsData);
 
-    Team.create(teamsData);
+    await Team.create(teamsData);
 
     res.status(200).json("creado");
   } catch (error) {
