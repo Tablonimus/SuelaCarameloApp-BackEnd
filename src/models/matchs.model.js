@@ -29,7 +29,18 @@ const matchSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "playing", "finished", "postponed", "canceled"],
+    enum: [
+      "pending", // antes de empezar
+      "first_half", // primer tiempo
+      "halftime", // entre tiempo
+      "second_half", // segundo tiempo
+      "extra_time", // tiempo extra
+      "penalties", // definición por penales
+      "finished", // finalizado
+      "postponed", // aplazado
+      "canceled", // cancelado
+      "suspended", // suspendido
+    ],
     default: "pending",
   },
   score: {
@@ -42,6 +53,19 @@ const matchSchema = new mongoose.Schema({
       default: 0,
     },
   },
+
+  penaltyScore: {
+    local: {
+      type: Number,
+      default: 0,
+    },
+
+    visitor: {
+      type: Number,
+      default: 0,
+    },
+  },
+
   referee: {
     type: String,
   },
