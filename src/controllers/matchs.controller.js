@@ -3,7 +3,22 @@ import Team from "../models/teams.model.js";
 
 export const createMatch = async (req, res) => {
   try {
-    const { place, date, time, local, visitor, category, referee } = req.body;
+    const {
+      place,
+      date,
+      time,
+      local,
+      visitor,
+      category,
+      referee,
+      status,
+      score,
+      penaltyScore,
+    } = req.body;
+
+    if (!local || !visitor) {
+      return res.status(400).json({ error: "Faltan equipos seleccionados" });
+    }
 
     // Validar que los equipos existan
     const localTeam = await Team.findById(local);
@@ -22,6 +37,9 @@ export const createMatch = async (req, res) => {
       visitor,
       category,
       referee,
+      status: status || "pending",
+      score: score || { local: 0, visitor: 0 },
+      penaltyScore: penaltyScore || { local: 0, visitor: 0 },
     });
 
     await newMatch.save();
@@ -35,6 +53,7 @@ export const createMatch = async (req, res) => {
       match: newMatch,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       error: "Error al crear el partido",
       details: error.message,
@@ -83,7 +102,7 @@ export const updateMatch = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-
+    console.log(updateData);
     // Si se actualizan equipos, validar que existan
     if (updateData.local || updateData.visitor) {
       if (updateData.local) {
@@ -128,17 +147,21 @@ export const updateMatch = async (req, res) => {
   }
 };
 
-// Actualizar el marcador de un partido
 export const updateMatchScore = async (req, res) => {
   try {
     const { id } = req.params;
-    const { localScore, visitorScore, status } = req.body;
+    const { localScore, visitorScore, status, penaltyScore } = req.body;
 
     const updateData = {
       "score.local": localScore,
       "score.visitor": visitorScore,
       status: status || "finished",
     };
+
+    if (penaltyScore) {
+      updateData["penaltyScore.local"] = penaltyScore.local ?? 0;
+      updateData["penaltyScore.visitor"] = penaltyScore.visitor ?? 0;
+    }
 
     const updatedMatch = await Match.findByIdAndUpdate(id, updateData, {
       new: true,
@@ -217,36 +240,37 @@ export const getMatchesByTeam = async (req, res) => {
   }
 };
 
-// Obtener partidos en vivo/proximos/recientes
 export const getLiveMatches = async (req, res) => {
   try {
-    console.log("Obteniendo partidos en vivo/proximos/recientes...");
-    console.log("Obteniendo partidos en vivo/proximos/recientes...");
-    
-    // Obtener partidos que están en juego, próximos o recientemente finalizados
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const oneWeekAhead = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    const liveStatuses = [
+      "first_half",
+      "extra_time",
+      "second_half",
+      "penalties",
+      "halftime",
+    ];
+
     const liveMatches = await Match.find({
       $or: [
+        { status: { $in: liveStatuses } }, // En juego
+        { status: "pending", date: { $lte: oneWeekAhead } }, // Próximos 7 días
+        { status: "finished", date: { $gte: oneWeekAgo } }, // Finalizados recientemente
         { status: "postponed" },
         { status: "canceled" },
-        { status: "playing" },
-        {
-          status: "pending",
-          date: { $lte: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) },
-        }, // Próximos 7 días
-        {
-          status: "finished",
-          date: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-        }, // Finalizados en los últimos 7 días
+        { status: "suspended" },
       ],
     })
       .populate("local", "name logo")
       .populate("visitor", "name logo")
-      .sort({ status: -1, date: 1 }); // Ordenar por: en vivo primero, luego por fecha
+      .sort({ status: -1, date: 1 });
 
     res.status(200).json(liveMatches);
   } catch (error) {
-    console.log(error);
-
+    console.error("Error en getLiveMatches:", error);
     res.status(500).json({
       error: "Error al obtener partidos en vivo",
       details: error.message,
