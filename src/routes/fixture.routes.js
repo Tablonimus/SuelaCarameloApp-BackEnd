@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   createFixture,
   deleteFixture,
-  getFixtureById,
+  // getFixtureById,
   getFixtures,
   updateFixture,
 } from "../controllers/fixture.controller.js";
@@ -10,7 +10,7 @@ import {
 const router = Router();
 
 router.get("/", getFixtures);
-router.get("/:id", getFixtureById);
+// router.get("/:id", getFixtureById);
 router.post("/", createFixture);
 router.delete("/:id", deleteFixture);
 router.put("/:id", updateFixture);
