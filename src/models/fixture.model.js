@@ -9,9 +9,10 @@ const fixtureSchema = new mongoose.Schema(
       default: "temporada",
     },
     number: {
-      type: String,
+      type: Number,
       required: true,
       index: true,
+      min: 1,
     },
     image: {
       type: String,
