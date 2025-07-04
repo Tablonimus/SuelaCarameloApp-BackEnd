@@ -2,72 +2,131 @@ import Fixture from "../models/fixture.model.js";
 
 export const getFixtures = async (req, res) => {
   try {
-    const { category = "A1" } = req.query;
+    const { category = "A1", season, tournament } = req.query;
 
-    const fixtures = await Fixture.find({ category: category });
-    const activeFixture = fixtures
-      .reverse()
-      .find((fixture) => fixture.is_Active);
+    const query = { category };
+    if (season) query.season = season;
+    if (tournament) query.tournament = tournament;
 
-    res.json({ fixtures, activeNumber: activeFixture?.number || 1 });
+    const fixtures = await Fixture.find(query).sort({ number: 1 });
+    const activeFixture = await Fixture.findOne({ ...query, is_Active: true });
+
+    res.json({
+      fixtures,
+      activeFixture: activeFixture || null,
+      seasons: await Fixture.distinct("season", { category }),
+      tournaments: await Fixture.distinct("tournament", {
+        category,
+        ...(season && { season }),
+      }),
+    });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ status: "Error", message: error.message });
   }
-};
-
-export const getFixtureById = async (req, res) => {
-  const fixture = await Fixture.findById(req.params.id);
-  res.json(fixture);
 };
 
 export const createFixture = async (req, res) => {
   try {
-    const { number, image, is_Active, category } = req.body;
+    const { number, image, category, season, tournament } = req.body;
 
-    const allFixtures = await Fixture.find({ category: category });
+    // Verificar si ya existe
+    const existingFixture = await Fixture.findOne({
+      number,
+      category,
+      season,
+      tournament,
+    });
 
-    for (let i = 0; i < allFixtures.length; i++) {
-      const element = allFixtures[i];
-      const fixture = await Fixture.findById(element._id);
-      fixture.is_Active = false;
-      fixture.save();
-    }
-
-    const updatedFixture = await Fixture.findOneAndUpdate(
-      { number: number, category: category },
-      { number, image, is_Active, category },
-      { new: true }
-    );
-    if (updatedFixture) {
-      console.log("EL FIXTURE SE ACTUALIZA", updatedFixture);
-      return res.json(updatedFixture);
-    } else {
-      const newFixture = await Fixture.create({
-        number,
-        image,
-        is_Active,
-        category,
+    if (existingFixture) {
+      return res.status(400).json({
+        status: "Error",
+        message: "Ya existe un fixture con estos datos",
       });
-      console.log("creando nuevo fixture ", newFixture);
-      return res.json(newFixture);
     }
+
+    const newFixture = await Fixture.create(req.body);
+    res.status(201).json(newFixture);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ status: "Error", message: error.message });
+    res.status(400).json({ status: "Error", message: error.message });
+  }
+};
+
+export const updateFixture = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { is_Active, ...updateData } = req.body;
+
+    // Si se marca como activo, desactivar otros de la misma categoría/temporada/torneo
+    if (is_Active) {
+      const fixture = await Fixture.findById(id);
+      await Fixture.updateMany(
+        {
+          category: fixture.category,
+          season: fixture.season,
+          tournament: fixture.tournament,
+          is_Active: true,
+        },
+        { is_Active: false }
+      );
+    }
+
+    const updatedFixture = await Fixture.findByIdAndUpdate(
+      id,
+      { ...updateData, is_Active },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedFixture) {
+      return res.status(404).json({ message: "Fixture no encontrado" });
+    }
+
+    res.json(updatedFixture);
+  } catch (error) {
+    res.status(400).json({ status: "Error", message: error.message });
   }
 };
 
 export const deleteFixture = async (req, res) => {
-  const Fixture = await Fixture.findByIdAndDelete(req.params.id);
-  if (!Fixture) return res.status(404).json({ message: "Fixture not found" });
-  res.sendStatus(204);
+  try {
+    const deletedFixture = await Fixture.findByIdAndDelete(req.params.id);
+    if (!deletedFixture) {
+      return res.status(404).json({ message: "Fixture no encontrado" });
+    }
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(500).json({ status: "Error", message: error.message });
+  }
 };
 
-export const updateFixture = async (req, res) => {
-  const Fixture = await Noticia.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-  if (!Fixture) return res.status(404).json({ message: "Fixture not found" });
-  res.json(noticia);
+export const setActiveFixture = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const fixture = await Fixture.findById(id);
+
+    if (!fixture) {
+      return res.status(404).json({ message: "Fixture no encontrado" });
+    }
+
+    // Desactivar todos los fixtures de la misma categoría/temporada/torneo
+    await Fixture.updateMany(
+      {
+        category: fixture.category,
+        season: fixture.season,
+        tournament: fixture.tournament,
+        is_Active: true,
+      },
+      { is_Active: false }
+    );
+
+    // Activar el fixture seleccionado
+    const activatedFixture = await Fixture.findByIdAndUpdate(
+      id,
+      { is_Active: true },
+      { new: true }
+    );
+
+    res.json(activatedFixture);
+  } catch (error) {
+    res.status(500).json({ status: "Error", message: error.message });
+  }
 };

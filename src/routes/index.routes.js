@@ -22,7 +22,6 @@ app.use("/players", playerRoutes);
 app.use("/fixtures", fixtureRoutes);
 app.use("/positions", positionsRoutes);
 app.use("/matches", matchesRoutes);
-
 app.use("/hero-images", heroSectionRoutes);
 
 export default app;
