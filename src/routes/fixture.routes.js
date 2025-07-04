@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createFixture,
   deleteFixture,
+  fixFixtureNumbersToIntegers,
   getFixtures,
   normalizeAllFixtures,
   setActiveFixture,
@@ -15,6 +16,6 @@ router.post("/", createFixture);
 router.put("/:id", updateFixture);
 router.patch("/:id/activate", setActiveFixture);
 router.delete("/:id", deleteFixture);
-router.post("/normalize", normalizeAllFixtures);
+router.post("/normalize", fixFixtureNumbersToIntegers);
 
 export default router;

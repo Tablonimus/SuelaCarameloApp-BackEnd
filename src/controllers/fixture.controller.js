@@ -60,6 +60,7 @@ export const getFixtures = async (req, res) => {
       }),
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ status: "Error", message: error.message });
   }
 };
@@ -232,19 +233,71 @@ export const deleteFixture = async (req, res) => {
 
 export const normalizeAllFixtures = async (req, res) => {
   try {
-    // 1. Actualizar todos los fixtures agregando season 2025
-    const updateResult = await Fixture.updateMany(
-      {},
-      {
-        $set: {
-          season: "2025",
-          tournament: "Apertura",
-          // $set mantiene los demás campos como están
-        },
-      }
-    );
+    const allFixtures = await Fixture.find({});
 
-    // 2. Obtener estadísticas por categoría
+    let updatedCount = 0;
+    const defaultImage =
+      "https://res.cloudinary.com/demo/image/upload/default.jpg"; // Reemplazalo por tu imagen genérica
+    const defaultCategory = "DH"; // O elegí otra por defecto
+
+    for (const fixture of allFixtures) {
+      let needsUpdate = false;
+
+      // Campos básicos
+      if (!fixture.stage) {
+        fixture.stage = "temporada";
+        needsUpdate = true;
+      }
+
+      if (!fixture.season) {
+        fixture.season = "2025";
+        needsUpdate = true;
+      }
+
+      if (!fixture.tournament) {
+        fixture.tournament = "Apertura";
+        needsUpdate = true;
+      }
+
+      if (!fixture.image) {
+        fixture.image = defaultImage;
+        needsUpdate = true;
+      }
+
+      if (!fixture.category) {
+        fixture.category = defaultCategory;
+        needsUpdate = true;
+      }
+
+      if (!fixture.number) {
+        fixture.number = "0";
+        needsUpdate = true;
+      }
+
+      // Validaciones según etapa
+      if (fixture.stage === "temporada" && !fixture.matchweek) {
+        fixture.matchweek = 1;
+        needsUpdate = true;
+      }
+
+      if (fixture.stage !== "temporada") {
+        if (!fixture.playDates) fixture.playDates = {};
+        if (!fixture.playDates.from) {
+          fixture.playDates.from = new Date("2025-01-01");
+          needsUpdate = true;
+        }
+        if (!fixture.playDates.to) {
+          fixture.playDates.to = new Date("2025-01-02");
+          needsUpdate = true;
+        }
+      }
+
+      if (needsUpdate) {
+        await fixture.save();
+        updatedCount++;
+      }
+    }
+
     const statsByCategory = await Fixture.aggregate([
       {
         $group: {
@@ -258,21 +311,20 @@ export const normalizeAllFixtures = async (req, res) => {
       { $sort: { _id: 1 } },
     ]);
 
-    // 3. Obtener el fixture activo actual por categoría
     const activeFixtures = await Fixture.find({ is_Active: true });
 
     res.status(200).json({
       success: true,
-      message: `Normalización completada. ${updateResult.modifiedCount} fixtures actualizados.`,
+      message: `Normalización completa. ${updatedCount} fixtures actualizados.`,
       stats: {
-        totalUpdated: updateResult.modifiedCount,
+        totalUpdated: updatedCount,
         byCategory: statsByCategory,
       },
-      activeFixtures: activeFixtures,
+      activeFixtures,
       recommendations: {
-        missingFields:
-          "Verificar que todos los fixtures tengan stage, number, image, category",
-        nextSteps: "Revisar fixtures sin imagen o con números duplicados",
+        revisiones: "Verificar imágenes repetidas o fixtures con mismo número",
+        sugerencia:
+          "Agregar validaciones personalizadas para evitar duplicados silenciosos",
       },
     });
   } catch (error) {
@@ -280,7 +332,25 @@ export const normalizeAllFixtures = async (req, res) => {
       success: false,
       message: "Error durante la normalización",
       error: error.message,
-      stack: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
+  }
+};
+
+export const fixFixtureNumbersToIntegers = async (req, res) => {
+  try {
+    const fixtures = await Fixture.find({});
+    let updated = 0;
+
+    for (const fixture of fixtures) {
+      if (typeof fixture.number === "string") {
+        fixture.number = parseInt(fixture.number, 10);
+        await fixture.save();
+        updated++;
+      }
+    }
+
+    res.json({ updated });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
