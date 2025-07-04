@@ -154,7 +154,16 @@ export const updateFixture = async (req, res) => {
     const { id } = req.params;
     const { is_Active, tournament, ...updateData } = req.body;
 
-    // Si se marca como activo, desactivar otros de la misma categoría/temporada/torneo
+    // Asegurar que playDates exista aunque sea nulo
+    if (!updateData.playDates) {
+      updateData.playDates = { from: null, to: null };
+    } else {
+      updateData.playDates = {
+        from: updateData.playDates.from || null,
+        to: updateData.playDates.to || null,
+      };
+    }
+
     if (is_Active) {
       const fixture = await Fixture.findById(id);
       await Fixture.updateMany(

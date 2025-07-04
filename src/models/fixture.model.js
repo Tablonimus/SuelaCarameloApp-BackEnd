@@ -50,21 +50,11 @@ const fixtureSchema = new mongoose.Schema(
     playDates: {
       from: {
         type: Date,
-        required: function () {
-          return this.stage !== "temporada"; // Obligatorio para playoffs
-        },
+        default: null,
       },
       to: {
         type: Date,
-        required: function () {
-          return this.stage !== "temporada"; // Obligatorio para playoffs
-        },
-        validate: {
-          validator: function (v) {
-            return !this.playDates.from || this.playDates.from <= v;
-          },
-          message: "La fecha 'hasta' debe ser posterior a la fecha 'desde'",
-        },
+        default: null,
       },
     },
     matchweek: {
