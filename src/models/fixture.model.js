@@ -1,55 +1,127 @@
 import mongoose from "mongoose";
 
-const fixtureSchema = new mongoose.Schema({
-  number: {
-    type: Number,
-    required: [true, "El número de fecha es requerido"],
-    min: [1, "El número mínimo es 1"],
-    max: [30, "El número máximo es 30"],
-  },
-  image: {
-    type: String,
-    required: [true, "La imagen es requerida"],
-    validate: {
-      validator: function (v) {
-        return /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/.test(v);
+const fixtureSchema = new mongoose.Schema(
+  {
+    stage: {
+      type: String,
+      required: true,
+      enum: ["temporada", "octavos", "cuartos", "semifinal", "final"],
+      default: "temporada",
+    },
+    number: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    image: {
+      type: String,
+      required: true,
+      validate: {
+        validator: function (v) {
+          return /^https?:\/\/.+\..+/.test(v);
+        },
+        message: (props) => `${props.value} no es una URL válida!`,
       },
-      message: (props) => `${props.value} no es una URL válida!`,
+    },
+    is_Active: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    category: {
+      type: String,
+      required: true,
+      index: true,
+      enum: ["F1", "A1", "F2", "A2", "DH", "TI", "TN", "CM"],
+    },
+    season: {
+      type: String,
+      required: true,
+      default: "2025",
+      index: true,
+    },
+    tournament: {
+      type: String,
+      required: true,
+      enum: ["Apertura", "Clausura", "Torneo Anual"],
+      index: true,
+    },
+    playDates: {
+      from: {
+        type: Date,
+        required: function () {
+          return this.stage !== "temporada"; // Obligatorio para playoffs
+        },
+      },
+      to: {
+        type: Date,
+        required: function () {
+          return this.stage !== "temporada"; // Obligatorio para playoffs
+        },
+        validate: {
+          validator: function (v) {
+            return !this.playDates.from || this.playDates.from <= v;
+          },
+          message: "La fecha 'hasta' debe ser posterior a la fecha 'desde'",
+        },
+      },
+    },
+    matchweek: {
+      type: Number,
+      required: function () {
+        return this.stage === "temporada";
+      },
+      min: 1,
+      max: 38,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
     },
   },
-  is_Active: {
-    type: Boolean,
-    default: false,
-  },
-  category: {
-    type: String,
-    required: [true, "La categoría es requerida"],
-    enum: {
-      values: ["A1", "F1", "DH", "TI", "TN", "CM"],
-      message: "{VALUE} no es una categoría válida",
-    },
-  },
-  tournament: {
-    type: String,
-    required: [true, "El torneo es requerido"],
-    trim: true,
-    maxlength: [100, "El nombre del torneo no puede exceder 100 caracteres"],
-  },
-  season: {
-    type: String,
-    required: [true, "La temporada es requerida"],
-    match: [/^\d{4}-\d{4}$/, "Formato de temporada inválido (ej: 2023-2024)"],
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-// Índice compuesto para evitar duplicados
-fixtureSchema.index(
-  { number: 1, category: 1, season: 1, tournament: 1 },
-  { unique: true }
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
 );
 
-export default mongoose.model("Fixture", fixtureSchema);
+// Índices compuestos
+fixtureSchema.index({ category: 1, season: 1, tournament: 1 });
+fixtureSchema.index({ is_Active: 1, category: 1 });
+fixtureSchema.index({ stage: 1, season: 1, tournament: 1 });
+
+// Middleware para validar un solo fixture activo por categoría/torneo/temporada
+fixtureSchema.pre("save", async function (next) {
+  if (this.is_Active) {
+    await this.constructor.updateMany(
+      {
+        category: this.category,
+        season: this.season,
+        tournament: this.tournament,
+        _id: { $ne: this._id },
+      },
+      { $set: { is_Active: false } }
+    );
+  }
+  next();
+});
+
+// Virtual para mostrar el rango de fechas formateado
+fixtureSchema.virtual("dateRange").get(function () {
+  if (!this.playDates?.from) return "Temporada regular";
+
+  const options = { day: "2-digit", month: "long", year: "numeric" };
+  const from = this.playDates.from.toLocaleDateString("es-ES", options);
+  const to = this.playDates.to.toLocaleDateString("es-ES", options);
+
+  return `Jugado del ${from} al ${to}`;
+});
+
+const Fixture = mongoose.model("Fixture", fixtureSchema);
+
+export default Fixture;
