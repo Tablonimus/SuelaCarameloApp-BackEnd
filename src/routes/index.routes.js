@@ -6,6 +6,8 @@ import fixtureRoutes from "./fixture.routes.js";
 import positionsRoutes from "./positions.routes.js";
 import matchesRoutes from "./matchs.routes.js";
 import heroSectionRoutes from "./heroSection.routes.js";
+import sponsorRoutes from "./sponsors.routes.js";
+import couponRoutes from "./coupons.routes.js";
 import { Router } from "express";
 const app = Router();
 
@@ -23,5 +25,7 @@ app.use("/fixtures", fixtureRoutes);
 app.use("/positions", positionsRoutes);
 app.use("/matches", matchesRoutes);
 app.use("/hero-images", heroSectionRoutes);
+app.use("/sponsors", sponsorRoutes);
+app.use("/coupons", couponRoutes);
 
 export default app;
