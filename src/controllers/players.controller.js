@@ -37,9 +37,9 @@ export const deletePlayer = async (req, res) => {
 };
 
 export const updatePlayer = async (req, res) => {
-  const player = await Noticia.findByIdAndUpdate(req.params.id, req.body, {
+  const player = await Player.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
   if (!player) return res.status(404).json({ message: "Player not found" });
-  res.json(noticia);
+  res.json(player);
 };

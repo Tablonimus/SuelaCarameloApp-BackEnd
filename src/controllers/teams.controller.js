@@ -56,3 +56,17 @@ export const createManyTeams = async (req, res) => {
     res.status(500).json(error);
   }
 };
+
+export const updateTeam = async (req, res) => {
+  const team = await Team.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  if (!team) return res.status(404).json({ message: "Team not found" });
+  res.json(team);
+};
+
+export const deleteTeam = async (req, res) => {
+  const team = await Team.findByIdAndDelete(req.params.id);
+  if (!team) return res.status(404).json({ message: "Team not found" });
+  res.sendStatus(204);
+};
