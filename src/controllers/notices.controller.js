@@ -50,3 +50,15 @@ export const updateNoticia = async (req, res) => {
   if (!noticia) return res.status(404).json({ message: "Noticia not found" });
   res.json(noticia);
 };
+
+export const toggleApproval = async (req, res) => {
+  try {
+    const noticia = await Noticia.findById(req.params.id);
+    if (!noticia) return res.status(404).json({ message: "Noticia not found" });
+    noticia.is_approved = !noticia.is_approved;
+    await noticia.save();
+    res.json(noticia);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
