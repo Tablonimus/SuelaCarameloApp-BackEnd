@@ -30,26 +30,24 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    const userFound = await User.findOne({ email });
-    if (!userFound) return res.status(400).json({ message: "User not found" });
+    const userFound = await User.findOne({ username });
+    if (!userFound)
+      return res.status(400).json({ message: "Usuario no encontrado" });
 
     const isMatch = await bycrypt.compare(password, userFound.password);
-
     if (!isMatch)
-      return res.status(400).json({
-        massage: "invalid credentials",
-      });
+      return res.status(400).json({ message: "Contraseña incorrecta" });
 
-    const token = await createAccessToken({ id: userFound._id });
+    const token = await createAccessToken({ id: userFound._id, role: userFound.role });
 
-    res.cookie("token", token);
+    res.cookie("token", token, { httpOnly: true, sameSite: "none", secure: true });
     res.json({
       id: userFound._id,
       username: userFound.username,
-      email: userFound.email,
+      role: userFound.role,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -73,6 +71,6 @@ export const profile = async (req, res) => {
   return res.json({
     id: userFound.id,
     username: userFound.username,
-    email: userFound.email
+    role: userFound.role,
   })
 };
