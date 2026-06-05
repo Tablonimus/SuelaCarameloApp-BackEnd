@@ -24,6 +24,10 @@ const noticiasSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  is_approved: {
+    type: Boolean,
+    default: false,
+  },
   author: {
     type: Object,
     default: {
