@@ -2,16 +2,27 @@ import Noticia from "../models/notices.model.js";
 
 export const getNoticias = async (req, res) => {
   try {
-    const { category, admin } = req.query;
+    const { category, admin, page = 1, limit = 20 } = req.query;
 
     const filter = admin === "true" ? {} : { is_approved: true };
     if (category) filter.category = category;
 
-    const noticias = await Noticia.find(filter);
+    if (admin === "true") {
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const [data, total] = await Promise.all([
+        Noticia.find(filter).sort({ date: -1 }).skip(skip).limit(parseInt(limit)),
+        Noticia.countDocuments(filter),
+      ]);
+      return res.json({
+        data,
+        total,
+        page: parseInt(page),
+        totalPages: Math.ceil(total / parseInt(limit)),
+      });
+    }
 
-    const orderedNotices = noticias.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    res.json(orderedNotices);
+    const noticias = await Noticia.find(filter).sort({ date: -1 });
+    res.json(noticias);
   } catch (error) {
     res.status(500).json({ error });
   }
