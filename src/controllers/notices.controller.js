@@ -2,18 +2,14 @@ import Noticia from "../models/notices.model.js";
 
 export const getNoticias = async (req, res) => {
   try {
-    const { category } = req.query;
+    const { category, admin } = req.query;
 
-    console.log("cate", category);
-    console.log("entro");
+    const filter = admin === "true" ? {} : { is_approved: true };
+    if (category) filter.category = category;
 
-    const noticias = category
-      ? await Noticia.find({ category: category })
-      : await Noticia.find();
+    const noticias = await Noticia.find(filter);
 
-    const orderedNotices = noticias.sort((a, b) => {
-      return new Date(b.date) - new Date(a.date);
-    });
+    const orderedNotices = noticias.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     res.json(orderedNotices);
   } catch (error) {
@@ -49,6 +45,15 @@ export const updateNoticia = async (req, res) => {
   });
   if (!noticia) return res.status(404).json({ message: "Noticia not found" });
   res.json(noticia);
+};
+
+export const approveAll = async (req, res) => {
+  try {
+    const result = await Noticia.updateMany({}, { $set: { is_approved: true } });
+    res.json({ updated: result.modifiedCount });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };
 
 export const toggleApproval = async (req, res) => {
