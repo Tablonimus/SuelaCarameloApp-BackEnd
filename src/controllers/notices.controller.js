@@ -2,10 +2,11 @@ import Noticia from "../models/notices.model.js";
 
 export const getNoticias = async (req, res) => {
   try {
-    const { category, admin, page = 1, limit = 20 } = req.query;
+    const { category, admin, page = 1, limit = 20, search } = req.query;
 
     const filter = admin === "true" ? {} : { is_approved: true };
     if (category) filter.category = category;
+    if (search) filter.title = { $regex: search, $options: "i" };
 
     if (admin === "true") {
       const skip = (parseInt(page) - 1) * parseInt(limit);
