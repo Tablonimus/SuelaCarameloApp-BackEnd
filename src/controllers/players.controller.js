@@ -29,15 +29,24 @@ export const getPlayers = async (req, res) => {
 
 export const createPlayer = async (req, res) => {
   try {
-    const playerData = Object.values(req.body);
-    console.log(playerData.flat());
+    // Array body = bulk import from Excel; object body = single player from form
+    if (Array.isArray(req.body)) {
+      await Player.create(req.body);
+    } else if (typeof req.body === "object" && !Array.isArray(req.body)) {
+      // Check if it's a nested object of players (Excel import format: { "0": {...}, "1": {...} })
+      const values = Object.values(req.body);
+      const isBulk = values.length > 0 && typeof values[0] === "object";
+      if (isBulk) {
+        await Player.create(values.flat());
+      } else {
+        await Player.create(req.body);
+      }
+    }
 
-    await Player.create(playerData.flat());
-
-    res.json("creado");
+    res.status(201).json("creado");
   } catch (error) {
     console.log(error);
-    res.json(error);
+    res.status(500).json(error);
   }
 };
 

@@ -3,31 +3,27 @@ import Team from "../models/teams.model.js";
 export const getTeams = async (req, res) => {
   const { name, category } = req.query;
   try {
-    if (name && category) {
-      const teams = await Team.find({ name: name, category: category });
-      res.json(teams);
-    } else {
-      const teams = await Team.find();
-      res.json(teams);
-    }
+    const filter = {};
+    if (name) filter.name = name;
+    if (category) filter.category = category;
+    const teams = await Team.find(filter);
+    res.json(teams);
   } catch (error) {
     console.log(error);
-    res.json(error);
+    res.status(500).json(error);
   }
 };
 
 export const createTeam = async (req, res) => {
-  const { name, category, players, details, image } = req.body;
+  const { name, logo, address, foundation, stadium, colors, category } = req.body;
 
-  await Team.create({
-    name,
-    category,
-    players,
-    details,
-    image,
-  });
-
-  res.json("creado");
+  try {
+    await Team.create({ name, logo, address, foundation, stadium, colors, category });
+    res.status(201).json("creado");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
 };
 export const createManyTeams = async (req, res) => {
   try {
