@@ -28,7 +28,7 @@ const sortFixtures = (fixtures) => {
 
 export const getFixtures = async (req, res) => {
   try {
-    const { category = "A1", season, tournament } = req.query;
+    const { category = "A1", season, tournament, page, limit = "15" } = req.query;
 
     const query = { category };
     if (season) query.season = season;
@@ -36,17 +36,24 @@ export const getFixtures = async (req, res) => {
 
     let fixtures = await Fixture.find(query).lean();
 
-    // Agregar el campo virtual dateRange
     fixtures = fixtures.map((f) => ({
       ...f,
       dateRange: f.playDates?.from
-        ? `Jugado del ${f.playDates.from.toLocaleDateString(
-            "es-ES"
-          )} al ${f.playDates.to.toLocaleDateString("es-ES")}`
+        ? `Jugado del ${f.playDates.from.toLocaleDateString("es-ES")} al ${f.playDates.to.toLocaleDateString("es-ES")}`
         : "Temporada regular",
     }));
 
     fixtures = sortFixtures(fixtures);
+
+    const total = fixtures.length;
+
+    let meta = null;
+    if (page !== undefined) {
+      const pageNum = Math.max(1, parseInt(page));
+      const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
+      fixtures = fixtures.slice((pageNum - 1) * limitNum, pageNum * limitNum);
+      meta = { total, page: pageNum, limit: limitNum, totalPages: Math.ceil(total / limitNum) };
+    }
 
     const activeFixture = await Fixture.findOne({ ...query, is_Active: true });
 
@@ -58,6 +65,7 @@ export const getFixtures = async (req, res) => {
         category,
         ...(season && { season }),
       }),
+      ...(meta && { meta }),
     });
   } catch (error) {
     console.log(error);
