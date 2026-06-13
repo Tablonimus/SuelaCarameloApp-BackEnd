@@ -69,6 +69,10 @@ const matchSchema = new mongoose.Schema({
   referee: {
     type: String,
   },
+  assignedTo: {
+    type: String,
+    default: null,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
