@@ -66,9 +66,28 @@ export const createMatch = async (req, res) => {
 // Obtener todos los partidos
 export const getAllMatches = async (req, res) => {
   try {
-    const { assignedTo } = req.query;
+    const { assignedTo, page, limit = 10 } = req.query;
     const filter = {};
     if (assignedTo) filter.assignedTo = assignedTo;
+
+    if (page !== undefined) {
+      const pageNum = Math.max(1, parseInt(page));
+      const limitNum = Math.min(50, Math.max(1, parseInt(limit)));
+      const skip = (pageNum - 1) * limitNum;
+      const [total, matches] = await Promise.all([
+        Match.countDocuments(filter),
+        Match.find(filter)
+          .populate("local", "name logo")
+          .populate("visitor", "name logo")
+          .sort({ date: -1 })
+          .skip(skip)
+          .limit(limitNum),
+      ]);
+      return res.status(200).json({
+        data: matches,
+        meta: { total, page: pageNum, limit: limitNum, totalPages: Math.ceil(total / limitNum) },
+      });
+    }
 
     const matches = await Match.find(filter)
       .populate("local", "name logo")
@@ -77,9 +96,7 @@ export const getAllMatches = async (req, res) => {
 
     res.status(200).json(matches);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Error al obtener los partidos", details: error.message });
+    res.status(500).json({ error: "Error al obtener los partidos", details: error.message });
   }
 };
 
