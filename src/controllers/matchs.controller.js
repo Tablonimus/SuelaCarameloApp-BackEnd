@@ -14,6 +14,7 @@ export const createMatch = async (req, res) => {
       status,
       score,
       penaltyScore,
+      assignedTo,
     } = req.body;
 
     if (!local || !visitor) {
@@ -40,6 +41,7 @@ export const createMatch = async (req, res) => {
       status: status || "pending",
       score: score || { local: 0, visitor: 0 },
       penaltyScore: penaltyScore || { local: 0, visitor: 0 },
+      assignedTo: assignedTo || null,
     });
 
     await newMatch.save();
@@ -64,10 +66,14 @@ export const createMatch = async (req, res) => {
 // Obtener todos los partidos
 export const getAllMatches = async (req, res) => {
   try {
-    const matches = await Match.find()
+    const { assignedTo } = req.query;
+    const filter = {};
+    if (assignedTo) filter.assignedTo = assignedTo;
+
+    const matches = await Match.find(filter)
       .populate("local", "name logo")
       .populate("visitor", "name logo")
-      .sort({ date: 1 }); // Ordenar por fecha ascendente
+      .sort({ date: 1 });
 
     res.status(200).json(matches);
   } catch (error) {

@@ -67,10 +67,19 @@ export const profile = async (req, res) => {
   const userFound = await User.findById(req.user.id);
 
   if (!userFound) return res.status(400).json({ message: "User not found" });
-  
+
   return res.json({
     id: userFound.id,
     username: userFound.username,
     role: userFound.role,
   })
+};
+
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, "username role");
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
