@@ -9,6 +9,7 @@ import heroSectionRoutes from "./heroSection.routes.js";
 import sponsorRoutes from "./sponsors.routes.js";
 import couponRoutes from "./coupons.routes.js";
 import userRoutes from "./users.routes.js";
+import configRoutes from "./config.routes.js";
 import { Router } from "express";
 const app = Router();
 
@@ -28,6 +29,7 @@ app.use("/matches", matchesRoutes);
 app.use("/hero-images", heroSectionRoutes);
 app.use("/sponsors", sponsorRoutes);
 app.use("/coupons", couponRoutes);
-app.use("/users", userRoutes);
+app.use("/users",   userRoutes);
+app.use("/configs", configRoutes);
 
 export default app;
