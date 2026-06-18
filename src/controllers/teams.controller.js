@@ -1,4 +1,5 @@
 import Team from "../models/teams.model.js";
+import Player from "../models/players.model.js";
 
 export const getTeams = async (req, res) => {
   const { name, category } = req.query;
@@ -65,4 +66,33 @@ export const deleteTeam = async (req, res) => {
   const team = await Team.findByIdAndDelete(req.params.id);
   if (!team) return res.status(404).json({ message: "Team not found" });
   res.sendStatus(204);
+};
+
+export const normalizeCategories = async (req, res) => {
+  try {
+    const mapping = { A1: "FSP Masculino", F1: "FSP Femenino" };
+    const results = { teams: {}, players: {} };
+
+    for (const [oldVal, newVal] of Object.entries(mapping)) {
+      const teamsResult = await Team.updateMany(
+        { category: oldVal },
+        { $set: { category: newVal } }
+      );
+      results.teams[oldVal] = teamsResult.modifiedCount;
+
+      const playersResult = await Player.updateMany(
+        { category: oldVal },
+        { $set: { category: newVal } }
+      );
+      results.players[oldVal] = playersResult.modifiedCount;
+    }
+
+    res.json({
+      message: "Categorías normalizadas",
+      results,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
 };
