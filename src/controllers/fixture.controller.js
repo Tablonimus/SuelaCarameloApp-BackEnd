@@ -73,6 +73,16 @@ export const getFixtures = async (req, res) => {
   }
 };
 
+export const getAllActiveFixtures = async (req, res) => {
+  try {
+    const actives = await Fixture.find({ is_Active: true }).lean();
+    res.json(actives);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: "Error", message: error.message });
+  }
+};
+
 export const createFixture = async (req, res) => {
   try {
     const {

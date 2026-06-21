@@ -3,6 +3,7 @@ import {
   createFixture,
   deleteFixture,
   fixFixtureNumbersToIntegers,
+  getAllActiveFixtures,
   getFixtures,
   normalizeAllFixtures,
   setActiveFixture,
@@ -11,6 +12,7 @@ import {
 
 const router = Router();
 
+router.get("/active", getAllActiveFixtures);
 router.get("/", getFixtures);
 router.post("/", createFixture);
 router.put("/:id", updateFixture);
