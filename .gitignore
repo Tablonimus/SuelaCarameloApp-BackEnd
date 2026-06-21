@@ -7,6 +7,7 @@
 package-lock.json
 .env
 *.firebase-adminsdk*.json
+suelapp-837b5-firebase-adminsdk-oqol2-b30dadf279.json
 # testing
 /coverage
 
