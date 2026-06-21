@@ -40,9 +40,26 @@ export const createNoticia = async (req, res) => {
 };
 
 export const getNoticia = async (req, res) => {
-  const noticia = await Noticia.findById(req.params.id);
+  const noticia = await Noticia.findByIdAndUpdate(
+    req.params.id,
+    { $inc: { views: 1 } },
+    { new: true }
+  );
   if (!noticia) return res.status(404).json({ message: "Noticia not found" });
   res.json(noticia);
+};
+
+export const getTopNoticias = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const noticias = await Noticia.find({ is_approved: true })
+      .sort({ views: -1 })
+      .limit(limit)
+      .select("title category views date images");
+    res.json(noticias);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
 };
 
 export const deleteNoticia = async (req, res) => {

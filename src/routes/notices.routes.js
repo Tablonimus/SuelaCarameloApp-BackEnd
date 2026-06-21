@@ -3,6 +3,7 @@ import { authRequired } from "../middlewares/validateToken.js";
 import {
   getNoticias,
   getNoticia,
+  getTopNoticias,
   createNoticia,
   deleteNoticia,
   updateNoticia,
@@ -13,6 +14,7 @@ import {
 const router = Router();
 
 router.get("/", getNoticias);
+router.get("/top", getTopNoticias);
 router.patch("/approve-all", approveAll);
 router.get("/:id", getNoticia);
 router.post("/", createNoticia);

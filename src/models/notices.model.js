@@ -35,6 +35,10 @@ const noticiasSchema = new mongoose.Schema({
       img: "https://firebasestorage.googleapis.com/v0/b/suelapp-837b5.appspot.com/o/suela.png?alt=media&token=ccfb4ed3-ba86-4720-9e29-664957f65272",
     },
   },
+  views: {
+    type: Number,
+    default: 0,
+  },
 });
 
 export default mongoose.model("Noticia", noticiasSchema);
