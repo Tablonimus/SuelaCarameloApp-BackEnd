@@ -11,6 +11,7 @@ import couponRoutes from "./coupons.routes.js";
 import userRoutes from "./users.routes.js";
 import configRoutes from "./config.routes.js";
 import pageViewRoutes from "./pageViews.routes.js";
+import analyticsRoutes from "./analytics.routes.js";
 import { Router } from "express";
 const app = Router();
 
@@ -33,5 +34,6 @@ app.use("/coupons", couponRoutes);
 app.use("/users",   userRoutes);
 app.use("/configs", configRoutes);
 app.use("/pageviews", pageViewRoutes);
+app.use("/analytics", analyticsRoutes);
 
 export default app;
