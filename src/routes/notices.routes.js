@@ -4,6 +4,7 @@ import {
   getNoticias,
   getNoticia,
   getTopNoticias,
+  getStatsByAuthor,
   createNoticia,
   deleteNoticia,
   updateNoticia,
@@ -15,6 +16,7 @@ const router = Router();
 
 router.get("/", getNoticias);
 router.get("/top", getTopNoticias);
+router.get("/stats-by-author", getStatsByAuthor);
 router.patch("/approve-all", approveAll);
 router.get("/:id", getNoticia);
 router.post("/", createNoticia);

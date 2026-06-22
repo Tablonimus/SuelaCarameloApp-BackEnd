@@ -96,3 +96,29 @@ export const toggleApproval = async (req, res) => {
     res.status(500).json({ error });
   }
 };
+
+export const getStatsByAuthor = async (req, res) => {
+  try {
+    const stats = await Noticia.aggregate([
+      { $match: { is_approved: true } },
+      {
+        $group: {
+          _id: "$author.name",
+          image: { $first: "$author.img" },
+          totalNotas: { $sum: 1 },
+          totalVistas: { $sum: { $ifNull: ["$views", 0] } },
+          topNota: {
+            $max: {
+              views: { $ifNull: ["$views", 0] },
+              title: "$title",
+            },
+          },
+        },
+      },
+      { $sort: { totalVistas: -1 } },
+    ]);
+    res.json(stats);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
