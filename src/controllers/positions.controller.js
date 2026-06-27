@@ -3,7 +3,7 @@ import PositionsGeneral from "../models/positionsGeneral.model.js";
 
 export const getPositions = async (req, res) => {
   try {
-    const { category = "A1" } = req.query;
+    const { category = "FSP Masculino" } = req.query;
     console.log(category);
 
     const positions = await Position.findOne({ category: category });
@@ -16,7 +16,7 @@ export const getPositions = async (req, res) => {
 };
 export const getGeneralPositions = async (req, res) => {
   try {
-    const { category = "A1" } = req.query;
+    const { category = "FSP Masculino" } = req.query;
 
     const positions = await PositionsGeneral.findOne({ category: category });
 

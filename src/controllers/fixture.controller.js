@@ -28,7 +28,7 @@ const sortFixtures = (fixtures) => {
 
 export const getFixtures = async (req, res) => {
   try {
-    const { category = "A1", season, tournament, page, limit = "15" } = req.query;
+    const { category = "FSP Masculino", season, tournament, page, limit = "15" } = req.query;
 
     const query = { category };
     if (season) query.season = season;

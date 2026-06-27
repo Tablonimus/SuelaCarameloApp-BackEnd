@@ -33,7 +33,7 @@ const fixtureSchema = new mongoose.Schema(
       type: String,
       required: true,
       index: true,
-      enum: ["F1", "A1", "F2", "A2", "DH", "TI", "TN", "CM"],
+      enum: ["FSP Femenino", "FSP Masculino", "F2", "A2", "DH", "TI", "TN", "CM", "Ascenso"],
     },
     season: {
       type: String,
