@@ -9,12 +9,14 @@ import {
   getMatchesByCategory,
   getMatchesByTeam,
   getLiveMatches,
+  normalizeMatchCategories,
 } from "../controllers/matchs.controller.js";
 const router = Router();
 
 router.post("/", createMatch);
 router.get("/", getAllMatches);
 router.get("/live", getLiveMatches);
+router.patch("/normalize-categories", normalizeMatchCategories);
 router.get("/:id", getMatchById);
 router.put("/:id", updateMatch);
 router.patch("/:id/score", updateMatchScore);

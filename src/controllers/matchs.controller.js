@@ -263,6 +263,23 @@ export const getMatchesByTeam = async (req, res) => {
   }
 };
 
+export const normalizeMatchCategories = async (req, res) => {
+  try {
+    const mapping = { A1: "FSP Masculino", FEM: "FSP Femenino" };
+    const results = {};
+    for (const [oldVal, newVal] of Object.entries(mapping)) {
+      const r = await Match.updateMany(
+        { category: oldVal },
+        { $set: { category: newVal } }
+      );
+      results[oldVal] = r.modifiedCount;
+    }
+    res.json({ message: "Categorías de partidos normalizadas", results });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getLiveMatches = async (req, res) => {
   try {
     const now = new Date();
