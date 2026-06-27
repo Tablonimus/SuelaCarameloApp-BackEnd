@@ -16,10 +16,10 @@ export const getTeams = async (req, res) => {
 };
 
 export const createTeam = async (req, res) => {
-  const { name, logo, address, foundation, stadium, colors, category } = req.body;
+  const { name, logo, address, foundation, stadium, colors, category, shortName } = req.body;
 
   try {
-    await Team.create({ name, logo, address, foundation, stadium, colors, category });
+    await Team.create({ name, logo, address, foundation, stadium, colors, category, shortName });
     res.status(201).json("creado");
   } catch (error) {
     console.log(error);

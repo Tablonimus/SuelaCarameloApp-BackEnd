@@ -22,6 +22,9 @@ const teamSchema = new mongoose.Schema({
   category: {
     type: String,
   },
+  shortName: {
+    type: String,
+  },
   teams: { type: Array },
 });
 
