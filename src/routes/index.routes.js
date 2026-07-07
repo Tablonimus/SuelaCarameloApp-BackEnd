@@ -12,6 +12,7 @@ import userRoutes from "./users.routes.js";
 import configRoutes from "./config.routes.js";
 import pageViewRoutes from "./pageViews.routes.js";
 import analyticsRoutes from "./analytics.routes.js";
+import categoryRoutes from "./categories.routes.js";
 import { Router } from "express";
 const app = Router();
 
@@ -35,5 +36,6 @@ app.use("/users",   userRoutes);
 app.use("/configs", configRoutes);
 app.use("/pageviews", pageViewRoutes);
 app.use("/analytics", analyticsRoutes);
+app.use("/categories", categoryRoutes);
 
 export default app;

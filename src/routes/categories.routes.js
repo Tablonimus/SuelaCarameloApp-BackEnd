@@ -1,0 +1,14 @@
+import { Router } from "express";
+import {
+  getCategories,
+  createCategory,
+  updateCategory,
+} from "../controllers/categories.controller.js";
+
+const router = Router();
+
+router.get("/", getCategories);
+router.post("/", createCategory);
+router.patch("/:id", updateCategory);
+
+export default router;
