@@ -11,6 +11,9 @@ const noticiasSchema = new mongoose.Schema({
   images: {
     type: Array,
   },
+  epigrafe: {
+    type: String,
+  },
   videos: {
     type: String,
   },
