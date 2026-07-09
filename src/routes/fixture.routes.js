@@ -5,7 +5,6 @@ import {
   fixFixtureNumbersToIntegers,
   getAllActiveFixtures,
   getFixtures,
-  normalizeAllFixtures,
   setActiveFixture,
   updateFixture,
 } from "../controllers/fixture.controller.js";

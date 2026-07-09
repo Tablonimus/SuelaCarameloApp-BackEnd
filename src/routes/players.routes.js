@@ -10,7 +10,6 @@ const router = Router();
 
 router.get("/", getPlayers);
 
-router.get("/:id");
 router.post("/", createPlayer);
 router.put("/:id", updatePlayer);
 router.delete("/:id", deletePlayer);

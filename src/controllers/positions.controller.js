@@ -27,11 +27,6 @@ export const getGeneralPositions = async (req, res) => {
   }
 };
 
-export const getPositionById = async (req, res) => {
-  const positions = await Position.findById(req.params.id);
-  res.json(positions);
-};
-
 export const createPosition = async (req, res) => {
   try {
     const { image, category } = req.body;
@@ -83,18 +78,4 @@ export const createGeneralPosition = async (req, res) => {
     console.log(error);
     res.status(500).json({ status: "Error", message: error.message });
   }
-};
-
-export const deletePosition = async (req, res) => {
-  const Position = await Position.findByIdAndDelete(req.params.id);
-  if (!Position) return res.status(404).json({ message: "Position not found" });
-  res.sendStatus(204);
-};
-
-export const updatePosition = async (req, res) => {
-  const Position = await Noticia.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-  if (!Position) return res.status(404).json({ message: "Position not found" });
-  res.json(noticia);
 };

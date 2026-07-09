@@ -228,7 +228,7 @@ export const deleteMatch = async (req, res) => {
 export const getMatchesByCategory = async (req, res) => {
   try {
     const { category } = req.params;
-    const matches = await matchsModel
+    const matches = await Match
       .find({ category })
       .populate("local", "name logo")
       .populate("visitor", "name logo")
@@ -260,23 +260,6 @@ export const getMatchesByTeam = async (req, res) => {
       error: "Error al obtener partidos por equipo",
       details: error.message,
     });
-  }
-};
-
-export const normalizeMatchCategories = async (req, res) => {
-  try {
-    const mapping = { A1: "FSP Masculino", FEM: "FSP Femenino" };
-    const results = {};
-    for (const [oldVal, newVal] of Object.entries(mapping)) {
-      const r = await Match.updateMany(
-        { category: oldVal },
-        { $set: { category: newVal } }
-      );
-      results[oldVal] = r.modifiedCount;
-    }
-    res.json({ message: "Categorías de partidos normalizadas", results });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
 };
 

@@ -1,10 +1,4 @@
 import Team from "../models/teams.model.js";
-import Player from "../models/players.model.js";
-import Fixture from "../models/fixture.model.js";
-import Noticia from "../models/notices.model.js";
-import Position from "../models/positions.model.js";
-import PositionsGeneral from "../models/positionsGeneral.model.js";
-import Match from "../models/matchs.model.js";
 
 export const getTeams = async (req, res) => {
   const { name, category } = req.query;
@@ -71,36 +65,4 @@ export const deleteTeam = async (req, res) => {
   const team = await Team.findByIdAndDelete(req.params.id);
   if (!team) return res.status(404).json({ message: "Team not found" });
   res.sendStatus(204);
-};
-
-export const normalizeCategories = async (req, res) => {
-  try {
-    const mapping = { A1: "FSP Masculino", F1: "FSP Femenino", FEM: "FSP Femenino" };
-    const collections = [
-      { name: "teams", model: Team },
-      { name: "players", model: Player },
-      { name: "fixtures", model: Fixture },
-      { name: "notices", model: Noticia },
-      { name: "positions", model: Position },
-      { name: "positionsGeneral", model: PositionsGeneral },
-      { name: "matches", model: Match },
-    ];
-
-    const results = {};
-    for (const { name, model } of collections) {
-      results[name] = {};
-      for (const [oldVal, newVal] of Object.entries(mapping)) {
-        const r = await model.updateMany(
-          { category: oldVal },
-          { $set: { category: newVal } }
-        );
-        if (r.modifiedCount > 0) results[name][oldVal] = r.modifiedCount;
-      }
-    }
-
-    res.json({ message: "Categorías normalizadas en todas las colecciones", results });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json(error);
-  }
 };
